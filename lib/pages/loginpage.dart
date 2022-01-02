@@ -16,13 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final LocalData localData = LocalData();
   late AadOAuth _oauth;
-  //Config _config = MyProperties().config;
-  // MyProperties mp = MyProperties();
-  //Config _config = mp.Config;
-  //SingletonTwo two = SingletonTwo.instance;
-  //final AadOAuth _oauth = AadOAuth(config);
 
-  String _token = "";
   bool _isLoading = false;
 
   @override
@@ -87,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
     await _oauth.login();
     await _oauth.getAccessToken().then((value) {
       if (value != null) {
-        _token = value.toString();
+        String _token = value.toString();
 
         _storage.write(key: 'token', value: _token).then((value) {
           Navigator.of(context).pushAndRemoveUntil(
@@ -96,17 +90,6 @@ class _LoginPageState extends State<LoginPage> {
               (Route<dynamic> route) => false);
           _isLoading = false;
         });
-
-        //_storage.write(key: 'token', value: _token);
-
-        // Navigator.of(context).pushAndRemoveUntil(
-        //     MaterialPageRoute(
-        //         builder: (BuildContext context) => const MainPage()),
-        //     (Route<dynamic> route) => false);
-
-        // setState(() {
-        //   _isLoading = false;
-        // });
       }
     });
   }
