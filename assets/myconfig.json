@@ -1,0 +1,10 @@
+{
+    "tenant": "0fcd2810-9edc-41c4-be92-6c6d78468e7a",
+    "clientId": "c316ac1a-5759-41f5-9906-715a86552865",
+    "scope": "https://org2c9fce96.api.crm4.dynamics.com/user_impersonation",
+    "tokenIdentifier": "omer",
+    "clientSecret": "60c7Q~t1HSMTv~2QakY.gmQLo6BFnbUiCdr7k",  
+    "redirectUri": "https://oauth.pstmn.io/v1/callback"  
+}
+
+

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:test/apis/apiservices.dart';
 import 'package:test/model/account.dart';
 import 'package:test/model/filtermodel.dart';
@@ -9,7 +9,6 @@ import 'package:test/widgets/gridview.dart';
 import 'package:test/widgets/listview.dart';
 import 'package:test/widgets/loadingview.dart';
 import 'filterpage.dart';
-import 'loginpage.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -19,10 +18,10 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  late SharedPreferences _sharedPreferences;
+  final APIServices _api = APIServices();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final TextEditingController _txtSearch = TextEditingController();
   List<Account> _accounts = <Account>[];
-  List<Account> _accountsFiltered = <Account>[];
   ScreenView _screenView = ScreenView.sListView;
   DataStatus _dataStatus = DataStatus.dloading;
   FilterModel _filter = FilterModel();
@@ -30,7 +29,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus();
+    _loadAccounts(_filter);
   }
 
   @override
@@ -52,13 +51,13 @@ class _MainPageState extends State<MainPage> {
       body: _dataStatus == DataStatus.dloading
           ? loadingView()
           : _screenView == ScreenView.sListView
-              ? listView(_accountsFiltered)
-              : gridView(_accountsFiltered),
+              ? listView(_accounts)
+              : gridView(_accounts),
     );
   }
 
   Color _getFilterBtnColor() {
-    if (getodataFilter(_filter) != "") {
+    if (_api.getodataFilter(_filter) != "") {
       return Colors.black;
     } else {
       return Colors.white;
@@ -107,9 +106,10 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _searchAccount(String value) {
-    //lOCAL Filter
+    //**local Filter
     setState(() {
-      _accountsFiltered = _accounts
+      _accounts = _api
+          .getAccountsFromCache()
           .where((q) =>
               q.name.toString().toUpperCase().startsWith(value.toUpperCase()) ||
               q.accountnumber
@@ -121,26 +121,21 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _openFilter() async {
+    //**Remote Filter
     bool? result = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => FilterPage(_filter)));
 
     if (result != null) {
       if (result == true) {
-        if (_sharedPreferences.getString("filter") != null) {
-          String filterjson = _sharedPreferences.getString("filter").toString();
-          _filter = FilterModel.fromJson(jsonDecode(filterjson));
-          _loadAccounts(_filter);
-        }
+        _storage.read(key: "filter").then((value) {
+          if (value != null) {
+            if (_filter != FilterModel.fromJson(jsonDecode(value))) {
+              _filter = FilterModel.fromJson(jsonDecode(value));
+              _loadAccounts(_filter);
+            }
+          }
+        });
       }
-    }
-  }
-
-  void _checkLoginStatus() async {
-    _sharedPreferences = await SharedPreferences.getInstance();
-    if (_sharedPreferences.getString("token") == null) {
-      _sendloginscreen();
-    } else {
-      _loadAccounts(_filter);
     }
   }
 
@@ -148,28 +143,12 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       _dataStatus = DataStatus.dloading;
     });
-    APIServices.getAccounts(myfilter).then((value) async {
-      if (value.isEmpty) {
-        _sharedPreferences = await SharedPreferences.getInstance();
-        if (_sharedPreferences.getString("token") == null) {
-          _sendloginscreen();
-        }
-      }
 
-      _accounts = value;
+    _api.getAccounts(context, myfilter).then((value) async {
       setState(() {
-        _accountsFiltered = value;
+        _accounts = value;
         _dataStatus = DataStatus.dDone;
       });
     });
-  }
-
-  void _sendloginscreen() {
-    if (mounted) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) => const LoginPage()),
-          (Route<dynamic> route) => false);
-    }
   }
 }

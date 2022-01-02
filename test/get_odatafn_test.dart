@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:test/apis/apiservices.dart';
 import 'package:test/model/filtermodel.dart';
-import 'package:test/model/variables.dart';
 
 void main() {
   test("getODATA function test", () async {
@@ -8,7 +8,8 @@ void main() {
     FilterModel filterModel = FilterModel(countryCode: "U.S.");
 
     //ACT,
-    String oDataFilter = getodataFilter(filterModel);
+    APIServices _api = APIServices();
+    String oDataFilter = _api.getodataFilter(filterModel);
 
     //ASSERTION
     expect(oDataFilter != "", true);

@@ -1,0 +1,14 @@
+[
+    {
+        "countyCode": "",
+        "countryName": "Select County"
+    },
+    {
+        "countyCode": "U.S.",
+        "countryName": "United States of America"
+    },
+    {
+        "countyCode": "CA.",
+        "countryName": "Canada"
+    }
+]

@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:test/apis/localdata.dart';
 import 'package:test/model/country.dart';
 import 'package:test/model/cstate.dart';
 import 'package:test/model/filtermodel.dart';
 
 class FilterPage extends StatefulWidget {
-  final FilterModel fm;
+  final FilterModel filtrModel;
   const FilterPage(
-    this.fm, {
+    this.filtrModel, {
     Key? key,
   }) : super(key: key);
 
@@ -18,6 +18,8 @@ class FilterPage extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FilterPage> {
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  final LocalData localData = LocalData();
   final TextEditingController _txtName = TextEditingController();
   final TextEditingController _txtAccountNumber = TextEditingController();
   String _selectedCState = "";
@@ -28,8 +30,12 @@ class _FilterPageState extends State<FilterPage> {
   @override
   void initState() {
     super.initState();
-    _cstates = LocalData.getAllStates();
-    _counties = LocalData.getAllCountries();
+    localData.getAllCountries().then((value) => setState(() {
+          _counties = value;
+        }));
+    localData.getAllStates().then((value) => setState(() {
+          _cstates = value;
+        }));
     _loadFilterData();
   }
 
@@ -57,8 +63,12 @@ class _FilterPageState extends State<FilterPage> {
                 setState(() {
                   _selectedCounty = value.toString();
                   if (value != "") {
-                    _selectedCState = "";
-                    _cstates = LocalData.getStatesFromCounty(value.toString());
+                    setState(() {
+                      _selectedCState = "";
+                      localData
+                          .getStatesFromCounty(value.toString())
+                          .then((svalue) => _cstates = svalue);
+                    });
                   }
                 });
               },
@@ -118,7 +128,7 @@ class _FilterPageState extends State<FilterPage> {
   }
 
   void _loadFilterData() {
-    FilterModel filterModel = widget.fm;
+    FilterModel filterModel = widget.filtrModel;
     if ((filterModel.stateCode != null) && (filterModel.stateCode != "")) {
       _selectedCState = filterModel.stateCode.toString();
     }
@@ -138,7 +148,6 @@ class _FilterPageState extends State<FilterPage> {
   }
 
   void _applyFilter() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     FilterModel filter = FilterModel(
         countryCode: _selectedCounty,
         stateCode: _selectedCState,
@@ -146,15 +155,14 @@ class _FilterPageState extends State<FilterPage> {
         accountnumber: _txtAccountNumber.text);
 
     String sfilter = jsonEncode(filter);
-    sharedPreferences.setString("filter", sfilter);
+    _storage.write(key: "filter", value: sfilter);
     Navigator.pop(context, true);
   }
 
   void _removeFilter() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     FilterModel filter = FilterModel();
     String sfilter = jsonEncode(filter);
-    sharedPreferences.setString("filter", sfilter);
+    _storage.write(key: "filter", value: sfilter);
     Navigator.pop(context, true);
   }
 }

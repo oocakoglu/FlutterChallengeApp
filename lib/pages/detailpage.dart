@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test/apis/localdata.dart';
 import 'package:test/model/account.dart';
-import 'package:test/model/cstate.dart';
 
 class DetailPage extends StatefulWidget {
   final Account _account;
@@ -15,11 +14,25 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  final LocalData localData = LocalData();
+  late Account _a;
+  String _cStateName = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    _a = widget._account;
+
+    localData
+        .getStateByCode(_a.address1Stateorprovince.toString())
+        .then((value) => setState(() {
+              _cStateName = value.statename;
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
-    Account _a = widget._account;
-    CState _cState = LocalData.getState(_a.address1Stateorprovince.toString());
-
     return Scaffold(
         appBar: AppBar(
           title: const Text("Account Details"),
@@ -46,7 +59,7 @@ class _DetailPageState extends State<DetailPage> {
                   enabled: false,
                   decoration: const InputDecoration(labelText: "Country")),
               TextField(
-                  controller: TextEditingController(text: _cState.statename),
+                  controller: TextEditingController(text: _cStateName),
                   enabled: false,
                   decoration: const InputDecoration(labelText: "State")),
               TextField(

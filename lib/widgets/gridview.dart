@@ -10,7 +10,7 @@ Widget gridView(List<Account> accounts) {
     itemCount: accounts.length,
     itemBuilder: (context, index) {
       return Material(
-        color: Colors.white,
+        color: Colors.grey,
         child: InkWell(
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
