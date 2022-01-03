@@ -50,6 +50,7 @@ class _FilterPageState extends State<FilterPage> {
         child: Column(
           children: [
             DropdownButton(
+              key: const Key("cmbCountry"),
               value: _selectedCounty,
               hint: const Text("Select Country"),
               isExpanded: true,
@@ -74,6 +75,7 @@ class _FilterPageState extends State<FilterPage> {
               },
             ),
             DropdownButton(
+              key: const Key("cmbState"),
               value: _selectedCState,
               hint: const Text("Select State"),
               isExpanded: true,
@@ -90,9 +92,11 @@ class _FilterPageState extends State<FilterPage> {
               },
             ),
             TextField(
+                key: const Key("txtName"),
                 controller: _txtName,
                 decoration: const InputDecoration(labelText: "Name")),
             TextField(
+                key: const Key("txtAccountNumber"),
                 controller: _txtAccountNumber,
                 decoration: const InputDecoration(labelText: "Account Number")),
             _bottomButtons()
@@ -110,6 +114,7 @@ class _FilterPageState extends State<FilterPage> {
               padding: const EdgeInsets.only(
                   left: 24, right: 24, bottom: 15, top: 5),
               child: ElevatedButton.icon(
+                  key: const Key("btnCancelFilter"),
                   onPressed: _removeFilter,
                   icon: const Icon(Icons.cancel_outlined),
                   label: const Text("Cancel Filtr"))),
@@ -119,6 +124,7 @@ class _FilterPageState extends State<FilterPage> {
               padding: const EdgeInsets.only(
                   left: 24, right: 24, bottom: 15, top: 5),
               child: ElevatedButton.icon(
+                  key: const Key("btnApplyFilter"),
                   onPressed: _applyFilter,
                   icon: const Icon(Icons.filter_alt_sharp),
                   label: const Text("Apply Filter"))),

@@ -60,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         margin: const EdgeInsets.only(top: 15.0),
         child: ElevatedButton(
+          key: const Key('loginbtn'),
           child: const Text("Enter", style: TextStyle(color: Colors.white70)),
           onPressed: _signIn,
         ));
