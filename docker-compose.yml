@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  challangeapp:
+   container_name: challengeapp2
+   image: challengeapp:1.0   
+   ports: 
+     - 56870:56870
+   sysctls:
+    - net.ipv4.tcp_keepalive_time=60
+   volumes:
+    - ./build/:/build/   
+   tty: true
