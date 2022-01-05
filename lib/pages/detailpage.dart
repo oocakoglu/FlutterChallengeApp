@@ -1,35 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:test/apis/localdata.dart';
 import 'package:test/model/account.dart';
+import 'package:test/widgets/myaddresscard.dart';
+import 'package:test/widgets/myimageview.dart';
 
-class DetailPage extends StatefulWidget {
+class DetailPage extends StatelessWidget {
   final Account _account;
+
   const DetailPage(
     this._account, {
     Key? key,
   }) : super(key: key);
-
-  @override
-  _DetailPageState createState() => _DetailPageState();
-}
-
-class _DetailPageState extends State<DetailPage> {
-  final LocalData localData = LocalData();
-  late Account _a;
-  String _cStateName = "";
-
-  @override
-  void initState() {
-    super.initState();
-
-    _a = widget._account;
-
-    localData
-        .getStateByCode(_a.address1Stateorprovince.toString())
-        .then((value) => setState(() {
-              _cStateName = value.statename;
-            }));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,48 +17,91 @@ class _DetailPageState extends State<DetailPage> {
         appBar: AppBar(
           title: const Text("Account Details"),
         ),
-        body: Padding(
+        body: SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Image.network(_a.entityimageUrl == null
-                  ? "https://via.placeholder.com/150x120"
-                  : _a.entityimageUrl.toString()),
-              TextField(
-                  controller: TextEditingController(text: _a.name.toString()),
-                  enabled: false,
-                  decoration: const InputDecoration(labelText: "Name")),
+              MyImageView(
+                entitityImage: _account.entityimage,
+                imageWidth: 250,
+                imageHeight: 250,
+              ),
               TextField(
                   controller:
-                      TextEditingController(text: _a.accountnumber.toString()),
+                      TextEditingController(text: _account.name.toString()),
                   enabled: false,
-                  decoration: const InputDecoration(labelText: "Number")),
+                  decoration: InputDecoration(
+                      labelText: "Name",
+                      prefixIcon: Icon(
+                        Icons.account_balance,
+                        color: Colors.blue.shade700,
+                      ))),
+              TextField(
+                controller: TextEditingController(
+                    text: _account.accountnumber.toString()),
+                enabled: false,
+                decoration: InputDecoration(
+                    labelText: "Number",
+                    prefixIcon: Icon(
+                      Icons.account_balance_wallet_rounded,
+                      color: Colors.blue.shade700,
+                    )),
+              ),
+              TextField(
+                decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.phone_android_rounded,
+                      color: Colors.blue.shade700,
+                    ),
+                    labelText: "Phone Number"),
+                controller:
+                    TextEditingController(text: _account.telephone1.toString()),
+                enabled: false,
+              ),
               TextField(
                   controller: TextEditingController(
-                      text: _a.address1Country.toString()),
+                      text: _account.emailaddress1.toString()),
                   enabled: false,
-                  decoration: const InputDecoration(labelText: "Country")),
-              TextField(
-                  controller: TextEditingController(text: _cStateName),
-                  enabled: false,
-                  decoration: const InputDecoration(labelText: "State")),
-              TextField(
-                  controller:
-                      TextEditingController(text: _a.emailaddress1.toString()),
-                  enabled: false,
-                  decoration:
-                      const InputDecoration(labelText: "E mail Adress")),
-              TextField(
-                  controller:
-                      TextEditingController(text: _a.websiteurl.toString()),
-                  enabled: false,
-                  decoration: const InputDecoration(labelText: "Web Site")),
+                  decoration: InputDecoration(
+                    labelText: "E mail Adress",
+                    prefixIcon: Icon(
+                      Icons.email,
+                      color: Colors.blue.shade700,
+                    ),
+                  )),
               TextField(
                   controller: TextEditingController(
-                      text: _a.address1Composite.toString()),
+                      text: _account.websiteurl.toString()),
                   enabled: false,
-                  decoration:
-                      const InputDecoration(labelText: "Composite Adress")),
+                  decoration: InputDecoration(
+                      labelText: "Web Site",
+                      prefixIcon: Icon(
+                        Icons.web,
+                        color: Colors.blue.shade700,
+                      ))),
+              TextField(
+                  controller: TextEditingController(
+                      text: _account.address1Composite.toString()),
+                  enabled: false,
+                  maxLines: 3,
+                  keyboardType: TextInputType.multiline,
+                  decoration: const InputDecoration(
+                      labelText: "Composite Adress",
+                      prefixIcon: Icon(
+                        Icons.home_filled,
+                        color: Colors.blue,
+                      ))),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                child: MyAddressCard(
+                  city: _account.address1City,
+                  stateCode: _account.address1Stateorprovince,
+                  countryName: _account.address1Country,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  textSize: 18,
+                ),
+              ),
             ],
           ),
         ));

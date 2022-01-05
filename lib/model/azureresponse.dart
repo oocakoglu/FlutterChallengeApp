@@ -1,29 +1,26 @@
 import 'account.dart';
 
 class AzureResponse {
-  final String odataContext;
-  final List<Account> value;
+  String? odataContext;
+  late List<Account> value;
 
-  const AzureResponse({required this.odataContext, required this.value});
+  AzureResponse({required this.odataContext, required this.value});
 
-  factory AzureResponse.fromJson(Map<String, dynamic> json) {
-    //**Fill The List
-    List<Account> accounts = <Account>[];
+  AzureResponse.fromJson(Map<String, dynamic> json) {
+    odataContext = json['@odata.context'];
     if (json['value'] != null) {
-      // List<dynamic> data = json["value"];
-      json["value"].forEach((element) {
-        try {
-          Account a = Account.fromJson(element);
-          accounts.add(a);
-        } catch (e) {
-          e.toString();
-        }
+      value = <Account>[];
+      json['value'].forEach((v) {
+        value.add(Account.fromJson(v));
+        //value!.add(Account.fromJson(v));
       });
     }
+  }
 
-    return AzureResponse(
-      odataContext: json['@odata.context'] as String,
-      value: accounts,
-    );
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['@odata.context'] = odataContext;
+    data['value'] = value.map((v) => v.toJson()).toList();
+    return data;
   }
 }

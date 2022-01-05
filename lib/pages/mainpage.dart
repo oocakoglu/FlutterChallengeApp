@@ -4,11 +4,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:test/apis/apiservices.dart';
 import 'package:test/model/account.dart';
 import 'package:test/model/filtermodel.dart';
-import 'package:test/model/variables.dart';
-import 'package:test/widgets/gridview.dart';
-import 'package:test/widgets/listview.dart';
-import 'package:test/widgets/loadingview.dart';
+import 'package:test/widgets/mygridview.dart';
+import 'package:test/widgets/mylistview.dart';
+import 'package:test/widgets/myloadingview.dart';
 import 'filterpage.dart';
+
+enum ScreenView { sListView, sTableView }
+enum DataStatus { dloading, dDone }
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -49,19 +51,11 @@ class _MainPageState extends State<MainPage> {
               }),
           actions: _appButtons()),
       body: _dataStatus == DataStatus.dloading
-          ? loadingView()
+          ? const MyLoadingView()
           : _screenView == ScreenView.sListView
-              ? listView(_accounts)
-              : gridView(_accounts),
+              ? MyListView(accounts: _accounts)
+              : MyGridView(accounts: _accounts),
     );
-  }
-
-  Color _getFilterBtnColor() {
-    if (_api.getodataFilter(_filter) != "") {
-      return Colors.black;
-    } else {
-      return Colors.white;
-    }
   }
 
   List<Widget> _appButtons() {
@@ -97,6 +91,14 @@ class _MainPageState extends State<MainPage> {
         onPressed: () => _setScreenView(ScreenView.sListView),
       ),
     ];
+  }
+
+  Color _getFilterBtnColor() {
+    if (_api.getodataFilter(_filter) != "") {
+      return Colors.black;
+    } else {
+      return Colors.white;
+    }
   }
 
   void _setScreenView(ScreenView sc) async {

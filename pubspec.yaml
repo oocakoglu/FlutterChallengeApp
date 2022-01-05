@@ -63,7 +63,8 @@ flutter:
   assets:
     - assets/countries.json
     - assets/cstates.json    
-    - assets/myconfig.json       
+    - assets/myconfig.json   
+    - assets/AzureLogo.png        
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

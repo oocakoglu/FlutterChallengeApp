@@ -116,8 +116,9 @@ class _FilterPageState extends State<FilterPage> {
               child: ElevatedButton.icon(
                   key: const Key("btnCancelFilter"),
                   onPressed: _removeFilter,
+                  style: ElevatedButton.styleFrom(primary: Colors.red),
                   icon: const Icon(Icons.cancel_outlined),
-                  label: const Text("Cancel Filtr"))),
+                  label: const Text("Clear Filtr"))),
         ),
         Expanded(
           child: Padding(
@@ -126,6 +127,7 @@ class _FilterPageState extends State<FilterPage> {
               child: ElevatedButton.icon(
                   key: const Key("btnApplyFilter"),
                   onPressed: _applyFilter,
+                  style: ElevatedButton.styleFrom(primary: Colors.green),
                   icon: const Icon(Icons.filter_alt_sharp),
                   label: const Text("Apply Filter"))),
         ),
