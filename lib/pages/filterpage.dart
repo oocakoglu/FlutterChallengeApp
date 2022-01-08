@@ -160,15 +160,11 @@ class _FilterPageState extends State<FilterPage> {
         name: _txtName.text,
         accountnumber: _txtAccountNumber.text);
 
-    //String sfilter = jsonEncode(filter);
-    //_storage.write(key: "filter", value: sfilter);
     Navigator.pop(context, filter);
   }
 
   void _removeFilter() async {
     FilterModel filter = FilterModel();
-    //String sfilter = jsonEncode(filter);
-    //_storage.write(key: "filter", value: sfilter);
     Navigator.pop(context, filter);
   }
 }
