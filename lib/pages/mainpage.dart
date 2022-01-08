@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:test/apis/apiservices.dart';
 import 'package:test/model/account.dart';
 import 'package:test/model/filtermodel.dart';
@@ -21,7 +19,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final APIServices _api = APIServices();
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final TextEditingController _txtSearch = TextEditingController();
   List<Account> _accounts = <Account>[];
   ScreenView _screenView = ScreenView.sListView;
@@ -124,20 +121,12 @@ class _MainPageState extends State<MainPage> {
 
   void _openFilter() async {
     //**Remote Filter
-    bool? result = await Navigator.push(
+    final _result = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => FilterPage(_filter)));
 
-    if (result != null) {
-      if (result == true) {
-        _storage.read(key: "filter").then((value) {
-          if (value != null) {
-            if (_filter != FilterModel.fromJson(jsonDecode(value))) {
-              _filter = FilterModel.fromJson(jsonDecode(value));
-              _loadAccounts(_filter);
-            }
-          }
-        });
-      }
+    if (_result != null) {
+      _filter = _result as FilterModel;
+      _loadAccounts(_filter);
     }
   }
 

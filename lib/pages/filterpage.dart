@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:test/apis/localdata.dart';
 import 'package:test/model/country.dart';
 import 'package:test/model/cstate.dart';
@@ -18,7 +16,7 @@ class FilterPage extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FilterPage> {
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  //final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final LocalData localData = LocalData();
   final TextEditingController _txtName = TextEditingController();
   final TextEditingController _txtAccountNumber = TextEditingController();
@@ -162,15 +160,15 @@ class _FilterPageState extends State<FilterPage> {
         name: _txtName.text,
         accountnumber: _txtAccountNumber.text);
 
-    String sfilter = jsonEncode(filter);
-    _storage.write(key: "filter", value: sfilter);
-    Navigator.pop(context, true);
+    //String sfilter = jsonEncode(filter);
+    //_storage.write(key: "filter", value: sfilter);
+    Navigator.pop(context, filter);
   }
 
   void _removeFilter() async {
     FilterModel filter = FilterModel();
-    String sfilter = jsonEncode(filter);
-    _storage.write(key: "filter", value: sfilter);
-    Navigator.pop(context, true);
+    //String sfilter = jsonEncode(filter);
+    //_storage.write(key: "filter", value: sfilter);
+    Navigator.pop(context, filter);
   }
 }
