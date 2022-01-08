@@ -16,7 +16,6 @@ class FilterPage extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FilterPage> {
-  //final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final LocalData localData = LocalData();
   final TextEditingController _txtName = TextEditingController();
   final TextEditingController _txtAccountNumber = TextEditingController();
